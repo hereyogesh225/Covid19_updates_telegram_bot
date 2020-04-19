@@ -125,8 +125,9 @@ public class Telegram_API {
         return map;
     }
 
-    public  String geStateData(String stateCode) throws IOException, ParseException {
+    public  String geStateData(String stateCode , boolean isCountry) throws IOException, ParseException {
         String data1 = null;
+        
 
         Request request = new Request.Builder().url("https://api.covid19india.org/data.json").get().build();
 
@@ -140,16 +141,31 @@ public class Telegram_API {
             JSONArray array = (JSONArray) object.get("statewise");
             Iterator iterator = array.iterator();
 
-            while (iterator.hasNext()) {
+            if(isCountry)
+            {
                 JSONObject object12 = (JSONObject) iterator.next();
+                
                 if (object12.get("statecode").equals(stateCode)) {
                     data1 = "\n<b>Confirmed : </b>  "+ object12.get("confirmed") + " ,\n<b>Active : </b> "  + object12.get("active") +" ,\n<b>Recovered : </b>"+ object12.get("recovered")
-                            + ",\n <b>Deaths : </b> " + object12.get("deaths");
+                            + ",\n<b>Deaths : </b> " + object12.get("deaths");
+                    
+                }
+             
+            }
+            else
+            {
+            
+            while (iterator.hasNext()) {
+                JSONObject object12 = (JSONObject) iterator.next();
+                
+                if (object12.get("statecode").equals(stateCode)) {
+                    data1 = "\n<b>Confirmed : </b>  "+ object12.get("confirmed") + " ,\n<b>Active : </b> "  + object12.get("active") +" ,\n<b>Recovered : </b>"+ object12.get("recovered")
+                            + ",\n<b>Deaths : </b> " + object12.get("deaths");
                     break;
                 }
 
             }
-        
+            }
         } catch (Exception e) {
             // TODO: handle exception
             e.printStackTrace();
@@ -196,6 +212,7 @@ public class Telegram_API {
                 state_codes.put((String)object12.get("state"), (String)object12.get("statecode"));
                 
             }
+            state_codes.remove("Total");
         
         } catch (Exception e) {
             // TODO: handle exception

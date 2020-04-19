@@ -48,6 +48,23 @@ public class Update_Message {
                              + "\n\n");
   
          }
+        else if (command.equals("/country")) {
+            String state_data = null;
+            try {
+                state_data = api.geStateData("TT",true);
+            } catch (IOException | ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (state_data == null) {
+                message.setText(WRONG_MESSAGE);
+            } else {
+                String state_result="<b>India : </b>" +"\n"+ state_data + "\n\n";
+                message.setText(state_result);
+                    
+            } 
+  
+         }
 
          else if (command.length() == 2) {
             String example = command.substring(0, 2).toUpperCase();
@@ -61,9 +78,9 @@ public class Update_Message {
                         break;
                     }
                 }
-                String state_name = "<b>" + state + "</b>";
+                String state_name = "<b>" + state + " : </b>";
                 
-                String state_data=api.geStateData(example);
+                String state_data=api.geStateData(example,false);
                     if (state_data == null) {
                         message.setText(WRONG_MESSAGE);
                     } else {
