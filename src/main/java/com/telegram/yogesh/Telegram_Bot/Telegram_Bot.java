@@ -1,5 +1,7 @@
 package com.telegram.yogesh.Telegram_Bot;
 
+
+
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -10,7 +12,8 @@ public class Telegram_Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
 
         Update_Message update_message = new Update_Message();
-        SendMessage message = update_message.sendMessage(update);
+        SendMessage message = null;
+        message = update_message.sendMessage(update);
         
 
         try {

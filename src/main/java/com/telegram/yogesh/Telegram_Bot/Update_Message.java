@@ -1,8 +1,10 @@
 package com.telegram.yogesh.Telegram_Bot;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.json.simple.parser.ParseException;
@@ -12,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class Update_Message {
 
-    private  String WRONG_MESSAGE = "<b><i>Oops !! You have Entered Wrong Code !! Please Enter Correct Code !!</i></b>";
+    private  String WRONG_MESSAGE = "<b><i>Oops !! You have Entered Wrong State Code !! Please Enter Correct State Code !!</i></b>";
     private  String WRONG_COMMAND = "<b><i>Looks Like You have Entered Wrong Command !! Please Check your Command !!</i></b>";
     private  String appendMessage = "<b>Please Enter Correct <i>State Code</i> to check  State Data : </b>\n";
     private  String lines = "=============================\n";
@@ -23,18 +25,29 @@ public class Update_Message {
              "<b><code>District   - Confirmed Cases </code></b>\n";
 
 
-    public SendMessage sendMessage(Update update) {
+    public SendMessage sendMessage(Update update)  {
         
         Telegram_API api = new Telegram_API();
         SendMessage message = new SendMessage();
         message.setParseMode(ParseMode.HTML);
         message.setChatId(update.getMessage().getChatId());
 
+        CovidDataWriter write=new CovidDataWriter();
+        
         String command = update.getMessage().getText();
 
         if (command.equals("/start")) {
+            
+            
             String firstname = update.getMessage().getFrom().getFirstName();
+            
 
+            try {
+                write.writeData(firstname,update.getMessage().getFrom().getId());
+            } catch (IOException | GeneralSecurityException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             message.setText("\nHi " + firstname + " , " + Telegram_Message.welcomeMessage);
 
         }
@@ -85,10 +98,19 @@ public class Update_Message {
                         message.setText(WRONG_MESSAGE);
                     } else {
                         String state_result=state_name +"\n"+ state_data + "\n\n";
-                        String district_data=api.geDistrictData(state).toString();
-                        message.setText(state_result+district_message + "<pre>" + district_data
-                                       .substring(1, district_data.length() - 1).replace("=", " - ")
-                                       + "</pre>" + "\n");
+                        TreeMap<String, Long> district_data=api.geDistrictData(state);
+                        System.out.println(district_data);
+                        if(district_data.isEmpty() || district_data.size()==0)
+                        {
+                            message.setText(state_result);
+                        }
+                        else
+                        {
+                            message.setText(state_result+district_message + "<pre>" + district_data.toString()
+                                    .substring(1, district_data.toString().length() - 1).replace("=", " - ")
+                                    + "</pre>" + "\n");
+              
+                        }
                             
                     }             
             } catch (IOException | ParseException e) {
@@ -97,8 +119,8 @@ public class Update_Message {
         }
          else if (command.equals("/dice")) {
              try {
+                 message.setText("<b> Dice : </b>");
                  api.getDiceValue(message.getChatId());
-                 
              } catch (IOException e) {
                  e.printStackTrace();
              } catch (ParseException e) {

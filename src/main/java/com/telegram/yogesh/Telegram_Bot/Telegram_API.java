@@ -78,7 +78,7 @@ public class Telegram_API {
         }
     }
 
-    public  String getDiceValue(String chatId) throws IOException, ParseException {
+    public void getDiceValue(String chatId) throws IOException, ParseException {
 
         Request request = new Request.Builder()
                 .url("https://api.telegram.org/bot1240568404:AAEFb-Vy2dt-Wt1anRELKCm5R_H1rerhMaI/sendDice?" + "chat_id="
@@ -92,7 +92,6 @@ public class Telegram_API {
             JSONObject result = (JSONObject) object.get("result");
             JSONObject dice = (JSONObject) result.get("dice");
             String dicevalue = dice.get("value").toString();
-            return dicevalue;
         }
     }
 
@@ -109,18 +108,19 @@ public class Telegram_API {
             JSONObject object = (JSONObject) parser.parse(data);
 
             JSONObject state = (JSONObject) object.get(stateCode);
-            JSONObject districtData = (JSONObject) state.get("districtData");
-            districtData.keySet().forEach(key -> {
-                // System.out.println(" Key : "+key);
-                JSONObject obj = ((JSONObject) districtData.get(key));
-                map.put("\n" + (String) key, (Long) obj.get("confirmed"));
-            });
+            if(state!=null)
+            {
+                JSONObject districtData = (JSONObject) state.get("districtData");
+                districtData.keySet().forEach(key -> {
+                    JSONObject obj = ((JSONObject) districtData.get(key));
+                    map.put("\n" + (String) key, (Long) obj.get("confirmed"));
+                });
+            }
 
-            // System.out.println(map);
 
         } catch (Exception e) {
             // TODO: handle exception
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
         return map;
     }
@@ -200,7 +200,6 @@ public class Telegram_API {
         try (Response response = client.newCall(request).execute()) {
             String data = response.body().string();
 
-            // System.out.println(data);
             JSONParser parser = new JSONParser();
             JSONObject object = (JSONObject) parser.parse(data);
 
