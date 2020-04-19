@@ -17,7 +17,10 @@ public class Telegram_Bot extends TelegramLongPollingBot {
         
 
         try {
-            execute(message);
+            if(message.getText()!=null || !message.getText().isEmpty())
+            {
+                execute(message);
+            }
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }

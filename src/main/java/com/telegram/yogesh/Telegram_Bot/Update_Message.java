@@ -116,8 +116,7 @@ public class Update_Message {
         }
          else if (command.equals("/dice")) {
              try {
-                 message.setText("<b> Dice : </b>"+
-                         api.getDiceValue(message.getChatId()));
+                api.getDiceValue(message.getChatId());
              } catch (IOException e) {
                  e.printStackTrace();
              } catch (ParseException e) {
