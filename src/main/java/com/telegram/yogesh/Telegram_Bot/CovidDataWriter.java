@@ -67,17 +67,24 @@ public class CovidDataWriter {
     }
 
     
-    public  void writeData(String name,int id) throws IOException, GeneralSecurityException
+    public  void writeData(String name) throws IOException, GeneralSecurityException
     {
-        sheetService=getSheetsService();
+        try
+        {
+
+            sheetService=getSheetsService();
+            
+              ValueRange appendBody=new ValueRange()
+              .setValues(Arrays.asList(Arrays.asList(name)));
+              
+              AppendValuesResponse appendResult=sheetService.spreadsheets().values()
+              .append(SPREADSHEET_ID, "users", appendBody)
+              .setValueInputOption("RAW").execute();
         
-          ValueRange appendBody=new ValueRange()
-          .setValues(Arrays.asList(Arrays.asList(name,id)));
-          
-          AppendValuesResponse appendResult=sheetService.spreadsheets().values()
-          .append(SPREADSHEET_ID, "users", appendBody)
-          .setValueInputOption("RAW").execute();
-                
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }            
         
         
     }

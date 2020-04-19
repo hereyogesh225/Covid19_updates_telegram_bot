@@ -37,19 +37,16 @@ public class Update_Message {
         String command = update.getMessage().getText();
 
         if (command.equals("/start")) {
-            
-            
-            String firstname = update.getMessage().getFrom().getFirstName();
-            
 
+            String firstname = update.getMessage().getFrom().getFirstName();
+
+            message.setText("\nHi " + firstname + " , " + Telegram_Message.welcomeMessage);
             try {
-                write.writeData(firstname,update.getMessage().getFrom().getId());
+                write.writeData(firstname);
             } catch (IOException | GeneralSecurityException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            message.setText("\nHi " + firstname + " , " + Telegram_Message.welcomeMessage);
-
         }
         
         else if (command.equals("/state")) {
@@ -119,8 +116,8 @@ public class Update_Message {
         }
          else if (command.equals("/dice")) {
              try {
-                 message.setText("<b> Dice : </b>");
-                 api.getDiceValue(message.getChatId());
+                 message.setText("<b> Dice : </b>"+
+                         api.getDiceValue(message.getChatId()));
              } catch (IOException e) {
                  e.printStackTrace();
              } catch (ParseException e) {

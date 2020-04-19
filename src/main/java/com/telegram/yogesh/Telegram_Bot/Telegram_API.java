@@ -78,7 +78,7 @@ public class Telegram_API {
         }
     }
 
-    public void getDiceValue(String chatId) throws IOException, ParseException {
+    public String getDiceValue(String chatId) throws IOException, ParseException {
 
         Request request = new Request.Builder()
                 .url("https://api.telegram.org/bot1240568404:AAEFb-Vy2dt-Wt1anRELKCm5R_H1rerhMaI/sendDice?" + "chat_id="
@@ -92,6 +92,7 @@ public class Telegram_API {
             JSONObject result = (JSONObject) object.get("result");
             JSONObject dice = (JSONObject) result.get("dice");
             String dicevalue = dice.get("value").toString();
+            return dicevalue;
         }
     }
 
